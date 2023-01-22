@@ -4,13 +4,18 @@ import { useEffect, useState } from "react";
 function App() {
   const [running, setRunning] = useState(false);
 
-  async function moveCursor(offset: number) {
-    await invoke("move_cursor", { offset });
-  }
+  const moveCursor = async (offset: number) => {
+    try {
+      await invoke("move_cursor", { offset });
+    } catch (e) {
+      setRunning(false);
+    }
+  };
 
   useEffect(() => {
     if (!running) return;
-    let offset = 1;
+    let offset = 100;
+    moveCursor(offset); // invoke to gain mouse control access
     const id = setInterval(() => {
       offset *= -1;
       moveCursor(offset);
